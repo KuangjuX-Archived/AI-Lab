@@ -53,3 +53,8 @@ void astar(graph G) {
 
     }
 }
+
+
+int main() {
+    return 0;
+}
