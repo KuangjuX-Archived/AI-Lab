@@ -4,45 +4,22 @@
 #include <cmath>
 #include "graph.h"
 
-std::vector<graph> list;
 
-bool pruning(graph g) {
-    for (int i=0; i<list.size(); i++) {
-        graph m = list[i];
-        if(g.nums[0][0] == m.nums[0][0] && g.nums[0][1] == m.nums[0][1] && g.nums[0][2] == m.nums[0][2] 
-        && g.nums[1][0] == m.nums[1][0] && g.nums[1][1] == m.nums[1][1] && g.nums[1][2] == m.nums[1][2]
-        && g.nums[2][0] == m.nums[2][0] && g.nums[2][1] == m.nums[2][1] && g.nums[2][2] == m.nums[2][2]){
-            return true;
-        }
-    }
-    return false;
-}
+using namespace std;
 
-void print_graph(graph* g) {
-    for(int i=0; i<3; i++) {
-        for(int j=0; j<3; j++){
-            if (g->nums[i][j] == 0){
-                printf("  ");
-            }else{
-                printf("%d ", g->nums[i][j]);
-            } 
-        }
-        printf("\n");
-    }
-    printf("\n\n");
-}
 
-void bfs(graph g) {
+void bfs(graph G) {
     using namespace std;
     queue<graph> q;
-    q.push(g);
+    vector<graph> close_set;
+    q.push(G);
     while(!q.empty()) {
-        graph cur_g = q.front();
+        graph n = q.front();
         q.pop();
-        print_graph(&cur_g);
-        list.push_back(cur_g);
+        print_graph(&n);
+        close_set.push_back(n);
         // judge the graph is correct
-        if (judge(cur_g)) {
+        if (judge(n)) {
             printf("success\n");
             return;
         }
@@ -50,18 +27,23 @@ void bfs(graph g) {
         for(int i=0; i<3; i++) {
             for(int j=0; j<3; j++) {
                 // search the point which is empty
-                if (cur_g.nums[i][j] == 0) {
+                if (n.nums[i][j] == 0) {
                     for(int k=0; k<4; k++) {
                         int cur_x = i + x[k];
                         int cur_y = j + y[k];
                         if (cur_x>=0 && cur_x <=2 && cur_y>=0 && cur_y<=2){
-                            int tmp = cur_g.nums[i][j];
-                            cur_g.nums[i][j] = cur_g.nums[cur_x][cur_y];
-                            cur_g.nums[cur_x][cur_y] = tmp;
-                            if (!pruning(cur_g)) {
-                                q.push(cur_g);
-                            }else{
-                                continue;
+                            graph G1;
+
+                            for(int m=0; m<3; m++) {
+                                for(int s=0; s<3; s++) {
+                                    G1.nums[m][s] = n.nums[m][s];
+                                }
+                            }
+
+                            G1.nums[i][j] = n.nums[cur_x][cur_y];
+                            G1.nums[cur_x][cur_y] = 0;
+                            if (!pruning(G1, close_set)) {
+                                q.push(G1);
                             }
                         }
                     }
@@ -75,26 +57,26 @@ void bfs(graph g) {
 
 int main() {
     using namespace std;
-    graph g;
-    // g.nums[0][0] = 2;
-    // g.nums[0][1] = 3;
-    // g.nums[0][2] = 5;
-    // g.nums[1][0] = 4;
+    graph G;
+    G.nums[0][0] = 2;
+    G.nums[0][1] = 3;
+    G.nums[0][2] = 5;
+    G.nums[1][0] = 4;
+    G.nums[1][1] = 0;
+    G.nums[1][2] = 6;
+    G.nums[2][0] = 7;
+    G.nums[2][1] = 8;
+    G.nums[2][2] = 1;
+
+    // g.nums[0][0] = 1;
+    // g.nums[0][1] = 2;
+    // g.nums[0][2] = 3;
+    // g.nums[1][0] = 8;
     // g.nums[1][1] = 0;
-    // g.nums[1][2] = 6;
+    // g.nums[1][2] = 4;
     // g.nums[2][0] = 7;
-    // g.nums[2][1] = 8;
-    // g.nums[2][2] = 1;
+    // g.nums[2][1] = 5;
+    // g.nums[2][2] = 6;
 
-    g.nums[0][0] = 1;
-    g.nums[0][1] = 2;
-    g.nums[0][2] = 3;
-    g.nums[1][0] = 8;
-    g.nums[1][1] = 0;
-    g.nums[1][2] = 4;
-    g.nums[2][0] = 7;
-    g.nums[2][1] = 5;
-    g.nums[2][2] = 6;
-
-    bfs(g);
+    bfs(G);
 }
