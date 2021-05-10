@@ -2,47 +2,69 @@
 #include <cstdio>
 #include <queue>
 #include <vector> 
+#include <cmath>
 #include "graph.h"
 
 using namespace std;
 
-void heuristic(graph *G) {
+int cost(Graph G, int x, int y) {
+    int res = G.nums[x][y];
+    for(int i=0; i<3; i++) {
+        for(int j=0; j<3; j++) {
+            if(GS.nums[i][j] == res) {
+                int ans = sqrt(abs(i*i-x*x)+abs(j*j-y*y));
+                return ans;
+            }
+        }
+    }
+}
 
+void heuristic(Graph *G) {
+    int ans = 0;
+    for(int i=0; i<3; i++){
+        for(int j=0; j<3; j++){
+            ans += cost(*G, i, j);
+        }
+    }
+    G->priproty = G->weight + ans;
 }
 
 
-void astar(graph G) {
-    priority_queue<graph> open_set;
-    vector<graph> close_set;
+void astar(Graph G) {
+    priority_queue<Graph> open_set;
+    vector<Graph> close_set;
     open_set.push(G);
     while(!open_set.empty()) {
-        graph n = open_set.top();
+        Graph n = open_set.top();
         open_set.pop();
-        if (judge(n)) {
+        printf("The Graph on the front of queue.\n");
+        print_graph(&n);
+        if (is_ok(n)) {
             printf("success\n");
+            return;
         }
-        
-        close_set.push_back(n);
+    
 
         for(int i=0; i<3; i++) {
             for(int j=0; j<3; j++) {
                 if (n.nums[i][j] == 0) {
                     for(int k=0; k<4; k++) {
-                        int cur_x = i + x[k];
-                        int cur_y = j + y[k];
-                        if (cur_x>=0 && cur_x <=2 && cur_y>=0 && cur_y<=2) {
-                            graph G1;
+                        int xi = i + x[k];
+                        int yi = j + y[k];
+                        if (xi>=0 && xi<=2 && yi>=0 && yi<=2) {
+                            Graph G1;
                             for(int m=0; m<3; m++){
                                 for(int s=0; s<3; s++){
                                     G1.nums[m][s] = n.nums[m][s];
                                 }
                             }
 
-                            G1.nums[cur_x][cur_y] = n.nums[i][j];
-                            G1.nums[i][j] = 0;
+                            G1.nums[i][j] = n.nums[xi][yi];
+                            G1.nums[xi][yi] = 0;
 
                             if (!pruning(G1, close_set)) {
                                 heuristic(&G1);
+                                close_set.push_back(G1);
                                 open_set.push(G1);
                             }
                         }
@@ -56,5 +78,17 @@ void astar(graph G) {
 
 
 int main() {
+    Static_Init();
+    Graph G;
+    G.nums[0][0] = 2;
+    G.nums[0][1] = 8;
+    G.nums[0][2] = 3;
+    G.nums[1][0] = 1;
+    G.nums[1][1] = 0;
+    G.nums[1][2] = 4;
+    G.nums[2][0] = 7;
+    G.nums[2][1] = 6;
+    G.nums[2][2] = 5;
+    astar(G);
     return 0;
 }

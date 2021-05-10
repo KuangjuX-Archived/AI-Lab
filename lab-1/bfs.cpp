@@ -8,18 +8,17 @@
 using namespace std;
 
 
-void bfs(graph G) {
-    using namespace std;
-    queue<graph> q;
-    vector<graph> close_set;
-    q.push(G);
-    while(!q.empty()) {
-        graph n = q.front();
-        q.pop();
+void bfs(Graph G) {
+    queue<Graph> open_set;
+    vector<Graph> close_set;
+    open_set.push(G);
+    while(!open_set.empty()) {
+        Graph n = open_set.front();
+        open_set.pop();
+        printf("The graph on the top of queue:\n");
         print_graph(&n);
-        close_set.push_back(n);
         // judge the graph is correct
-        if (judge(n)) {
+        if (is_ok(n)) {
             printf("success\n");
             return;
         }
@@ -29,10 +28,10 @@ void bfs(graph G) {
                 // search the point which is empty
                 if (n.nums[i][j] == 0) {
                     for(int k=0; k<4; k++) {
-                        int cur_x = i + x[k];
-                        int cur_y = j + y[k];
-                        if (cur_x>=0 && cur_x <=2 && cur_y>=0 && cur_y<=2){
-                            graph G1;
+                        int xi = i + x[k];
+                        int yi = j + y[k];
+                        if (xi>=0 && xi <=2 && yi>=0 && yi<=2){
+                            Graph G1;
 
                             for(int m=0; m<3; m++) {
                                 for(int s=0; s<3; s++) {
@@ -40,10 +39,13 @@ void bfs(graph G) {
                                 }
                             }
 
-                            G1.nums[i][j] = n.nums[cur_x][cur_y];
-                            G1.nums[cur_x][cur_y] = 0;
+                            G1.nums[i][j] = n.nums[xi][yi];
+                            G1.nums[xi][yi] = 0;
                             if (!pruning(G1, close_set)) {
-                                q.push(G1);
+                                printf("push graph:\n");
+                                print_graph(&G1);
+                                close_set.push_back(G1);
+                                open_set.push(G1);
                             }
                         }
                     }
@@ -57,26 +59,26 @@ void bfs(graph G) {
 
 int main() {
     using namespace std;
-    graph G;
-    G.nums[0][0] = 2;
-    G.nums[0][1] = 3;
-    G.nums[0][2] = 5;
-    G.nums[1][0] = 4;
-    G.nums[1][1] = 0;
-    G.nums[1][2] = 6;
-    G.nums[2][0] = 7;
-    G.nums[2][1] = 8;
-    G.nums[2][2] = 1;
+    Graph G;
+    // G.nums[0][0] = 2;
+    // G.nums[0][1] = 3;
+    // G.nums[0][2] = 5;
+    // G.nums[1][0] = 4;
+    // G.nums[1][1] = 0;
+    // G.nums[1][2] = 6;
+    // G.nums[2][0] = 7;
+    // G.nums[2][1] = 8;
+    // G.nums[2][2] = 1;
 
-    // g.nums[0][0] = 1;
-    // g.nums[0][1] = 2;
-    // g.nums[0][2] = 3;
-    // g.nums[1][0] = 8;
-    // g.nums[1][1] = 0;
-    // g.nums[1][2] = 4;
-    // g.nums[2][0] = 7;
-    // g.nums[2][1] = 5;
-    // g.nums[2][2] = 6;
+    G.nums[0][0] = 2;
+    G.nums[0][1] = 8;
+    G.nums[0][2] = 3;
+    G.nums[1][0] = 1;
+    G.nums[1][1] = 0;
+    G.nums[1][2] = 4;
+    G.nums[2][0] = 7;
+    G.nums[2][1] = 6;
+    G.nums[2][2] = 5;
 
     bfs(G);
 }
