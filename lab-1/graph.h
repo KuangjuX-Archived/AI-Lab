@@ -73,6 +73,8 @@ bool pruning(Graph G, vector<Graph> close_set) {
             for(int j=0; j<3; j++){
                if(x.nums[i][j] == G.nums[i][j]){
                    ok &= 1;
+               }else{
+                   ok = 0;
                } 
             }
         }
