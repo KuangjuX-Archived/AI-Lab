@@ -63,6 +63,7 @@ void astar(Graph G) {
                             G1.nums[xi][yi] = 0;
 
                             if (!pruning(G1, close_set)) {
+                                G.weight = n.weight + 1;
                                 heuristic(&G1);
                                 close_set.push_back(G1);
                                 open_set.push(G1);
