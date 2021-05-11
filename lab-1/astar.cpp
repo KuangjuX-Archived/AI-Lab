@@ -82,16 +82,6 @@ int main() {
     Static_Init();
     Graph G;
 
-    // G.nums[0][0] = 2;
-    // G.nums[0][1] = 8;
-    // G.nums[0][2] = 3;
-    // G.nums[1][0] = 1;
-    // G.nums[1][1] = 0;
-    // G.nums[1][2] = 4;
-    // G.nums[2][0] = 7;
-    // G.nums[2][1] = 6;
-    // G.nums[2][2] = 5;
-
     G.nums[0][0] = 2;
     G.nums[0][1] = 3;
     G.nums[0][2] = 5;
@@ -102,7 +92,10 @@ int main() {
     G.nums[2][1] = 8;
     G.nums[2][2] = 1;
     
-
-    astar(G);
+    if(is_solved(G)) {
+        astar(G);
+    }else{
+        printf("The solution is not be solved.\n");
+    }
     return 0;
 }
