@@ -53,6 +53,7 @@ def createModel(
     samplein, sampleout, sampleinminmax, sampleoutminmax, sampleinnorm, sampleoutnorm = handleData(
         population, vehicle, roadarea, passengertraffic, freighttraffic
     )
+    
     for i in range(maxepochs):
         hiddenout = logsig((np.dot(w1, sampleinnorm).transpose() + b1.transpose())).transpose()
         networkout = (np.dot(w2, hiddenout).transpose() + b2.transpose()).transpose()
@@ -102,14 +103,14 @@ def createModel(
 
     axes[0].legend((line1, line2), ('simulation output', 'real output'), loc='upper left')
 
-    yticks = [0, 20000, 40000, 60000]
+    yticks = [0, 10000, 20000, 30000, 40000, 50000, 60000]
     ytickslabel = [u'0', u'2', u'4', u'6']
     axes[0].set_yticks(yticks)
     axes[0].set_yticklabels(ytickslabel)
     axes[0].set_ylabel(u'passenger traffic(104)')
 
     xticks = range(0, 20, 2)
-    xtickslabel = range(1990, 2010, 2)
+    xtickslabel = range(1990, 2010, 1)
     axes[0].set_xticks(xticks)
     axes[0].set_xticklabels(xtickslabel)
     axes[0].set_xlabel(u'year')
@@ -125,7 +126,7 @@ def createModel(
     axes[1].set_ylabel(u'freight traffic(104)')
 
     xticks = range(0, 20, 2)
-    xtickslabel = range(1990, 2010, 2)
+    xtickslabel = range(1990, 2010, 1)
     axes[1].set_xticks(xticks)
     axes[1].set_xticklabels(xtickslabel)
     axes[1].set_xlabel(u'year')
@@ -137,19 +138,19 @@ def createModel(
 
 if __name__ == '__main__':
     population = [20.55, 22.44, 25.37, 27.13, 29.45, 30.10, 30.96, 34.06, 36.42, 38.09, 39.13, 39.99, 41.93, 44.59,
-                  47.30, 52.89, 55.73, 56.76, 59.17, 60.63]
+                  47.30, 52.89, 55.73, 56.76, 59.17, 60.63, 73.39]
 
     vehicle = [0.6, 0.75, 0.85, 0.9, 1.05, 1.35, 1.45, 1.6, 1.7, 1.85, 2.15, 2.2, 2.25, 2.35, 2.5, 2.6, 2.7, 2.85, 2.95,
-               3.1]
+               3.1, 3.9635]
 
     roadarea = [0.09, 0.11, 0.11, 0.14, 0.20, 0.23, 0.23, 0.32, 0.32, 0.34, 0.36, 0.36, 0.38, 0.49, 0.56, 0.59, 0.59,
-                0.67, 0.69, 0.79]
+                0.67, 0.69, 0.79, 0.9880]
 
     passengertraffic = [5126, 6217, 7730, 9145, 10460, 11387, 12353, 15750, 18304, 19836, 21024, 19490, 20433, 22598,
-                        25107, 33442, 36836, 40548, 42927, 43462]
+                        25107, 33442, 36836, 40548, 42927]
 
     freighttraffic = [1237, 1379, 1385, 1399, 1663, 1714, 1834, 4322, 8132, 8936, 11099, 11203, 10524, 11115, 13320,
-                      16762, 18673, 20724, 20803, 21804]
+                      16762, 18673, 20724, 20803]
 
     createModel(population, vehicle, roadarea, passengertraffic, freighttraffic)
 
