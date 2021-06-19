@@ -90,22 +90,15 @@ bool pruning(Graph G, vector<Graph> close_set) {
 bool is_solved(Graph G) {
     int inverse = 0;
     vector<int> tmp;
-    for(int i=0; i<3; i++) {
-        for(int j=0; j<3; j++) {
+    for(int i=0; i<3; i++)
+        for(int j=0; j<3; j++)
             tmp.push_back(G.nums[i][j]);
-        }
-    }
-
-    for(int i=0; i<tmp.size(); i++) {
-        for(int j=i+1; j<tmp.size(); j++) {
-            if(tmp[j] < tmp[i]) {
+        
+    for(int i=0; i<tmp.size(); i++)
+        for(int j=i+1; j<tmp.size(); j++)
+            if(tmp[j] < tmp[i])
                 inverse++;
-            }
-        }
-    }
-
-    if(inverse%2 == 1){
-        return true;
-    }
-    return false;
+            
+    if(inverse%2 == 1) return true;
+    else return false;
 }

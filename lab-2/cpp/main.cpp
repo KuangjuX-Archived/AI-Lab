@@ -64,6 +64,7 @@ int main()
     in2.wei(0.4+rand()%1,0.2+rand()%1);
     in3.wei(0.3+rand()%1,0.5+rand()%1);
     // cout<<"Start training..."<<endl;
+
     for(int i=0;i<19;i++){
         in1.In(trainingset[i][0]);
         in2.In(trainingset[i][1]);
@@ -114,6 +115,7 @@ int main()
 
         double outcome,outcome1;
         outcome=out1.output; outcome1=out2.output;
+        
         // cout<<outcome<<" "<<outcome1<<endl;
         outcome=out1.output*(47000-5126)+5126;
         outcome1=out2.output*(35000-1237)+1237;
