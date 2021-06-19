@@ -5,11 +5,17 @@ import genius.core.Bid;
 import genius.core.actions.Accept;
 import genius.core.actions.Action;
 import genius.core.actions.Offer;
+import genius.core.issue.Issue;
+import genius.core.issue.IssueDiscrete;
+import genius.core.issue.ValueDiscrete;
 import genius.core.parties.AbstractNegotiationParty;
 import genius.core.parties.NegotiationInfo;
+import genius.core.utility.AbstractUtilitySpace;
+import genius.core.utility.AdditiveUtilitySpace;
+import genius.core.utility.EvaluatorDiscrete;
 
 /**
- * ExampleAgent returns the bid that maximizes its own utility for half of the negotiation session.
+ * TrivialAgent returns the bid that maximizes its own utility for half of the negotiation session.
  * In the second half, it offers a random bid. It only accepts the bid on the table in this phase,
  * if the utility of the bid is higher than Example Agent's last bid.
  */
@@ -22,6 +28,30 @@ public class TrivialAgent extends AbstractNegotiationParty {
     @Override
     public void init(NegotiationInfo info) {
         super.init(info);
+
+        AbstractUtilitySpace utilitySpace = info.getUtilitySpace();
+        AbstractUtilitySpace additiveUtilitySpace = (AdditiveUtilitySpace)utilitySpace;
+
+        List<Issue> issues = additiveUtilitySpace.getDomain().getIssues();
+
+        for (Issue issue : issues) {
+            int issueNumber = issue.getNumber();
+            System.out.println(">> " + issue.getName() + " weight: " + ((AdditiveUtilitySpace) additiveUtilitySpace).getWeight(issueNumber));
+
+            // Assuming that issues are discrete only
+            IssueDiscrete issueDiscrete = (IssueDiscrete) issue;
+            EvaluatorDiscrete evaluatorDiscrete = (EvaluatorDiscrete) ((AdditiveUtilitySpace) additiveUtilitySpace).getEvaluator(issueNumber);
+
+            for (ValueDiscrete valueDiscrete : issueDiscrete.getValues()) {
+                System.out.println(valueDiscrete.getValue());
+                System.out.println("Evaluation(getValue): " + evaluatorDiscrete.getValue(valueDiscrete));
+                try {
+                    System.out.println("Evaluation(getEvaluation): " + evaluatorDiscrete.getEvaluation(valueDiscrete));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
     }
 
