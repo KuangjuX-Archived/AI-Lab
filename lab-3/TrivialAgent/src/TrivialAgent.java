@@ -1,4 +1,5 @@
 import java.util.List;
+import java.util.Objects;
 
 import genius.core.AgentID;
 import genius.core.Bid;
@@ -55,6 +56,23 @@ public class TrivialAgent extends AbstractNegotiationParty {
 
     }
 
+    public Bid generateRandomBidWithUtility(double utilityThreshold) {
+        Bid randomBid;
+        double utility;
+        do {
+            randomBid = generateRandomBid();
+            try {
+                utility = utilitySpace.getUtility(randomBid);
+            } catch (Exception e)
+            {
+                utility = 0.0;
+            }
+        }
+        while (utility < utilityThreshold);
+        return randomBid;
+    }
+
+
     /**
      * When this function is called, it is expected that the Party chooses one of the actions from the possible
      * action list and returns an instance of the chosen action.
@@ -68,27 +86,58 @@ public class TrivialAgent extends AbstractNegotiationParty {
         // Accept, Offer and EndNegotiation actions only.
         double time = getTimeLine().getTime(); // Gets the time, running from t = 0 (start) to t = 1 (deadline).
         // The time is normalized, so agents need not be
-        // concerned with the actual internal clock.
-
-
+        // concerned with the actual interna
         // First half of the negotiation offering the max utility (the best agreement possible) for Example Agent
-        if (time < 0.5) {
-            return new Offer(this.getPartyId(), this.getMaxUtilityBid());
-        } else {
+        if (time < 0.7) {
 
-            // Accepts the bid on the table in this phase,
-            // if the utility of the bid is higher than Example Agent's last bid.
+            if (lastReceivedOffer !=null
+                    && myLastOffer != null
+                    && this.utilitySpace.getUtility(lastReceivedOffer) > this.utilitySpace.getUtility(myLastOffer)) {
+                return new Accept(this.getPartyId(), lastReceivedOffer);
+            }
+            return new Offer(this.getPartyId(), this.getMaxUtilityBid());
+
+        } else if (time < 0.95) {
+
+            // Offering a random bid with utility threshold
             if (lastReceivedOffer != null
                     && myLastOffer != null
                     && this.utilitySpace.getUtility(lastReceivedOffer) > this.utilitySpace.getUtility(myLastOffer)) {
-
                 return new Accept(this.getPartyId(), lastReceivedOffer);
+
             } else {
-                // Offering a random bid
-                myLastOffer = generateRandomBid();
+
+                // Offering a random bid with utility threshold
+                double my_threshold = 0.7;
+                myLastOffer = generateRandomBidWithUtility(my_threshold);
                 return new Offer(this.getPartyId(), myLastOffer);
             }
+
+        } else {
+
+            //Accepting anyways
+            if (lastReceivedOffer != null
+                    && myLastOffer != null
+                    && this.utilitySpace.getUtility(lastReceivedOffer) > this.utilitySpace.getUtility(myLastOffer)) {
+                return new Accept(this.getPartyId(), lastReceivedOffer);
+
+            } else if (lastReceivedOffer != null
+                    && myLastOffer != null
+                    && this.utilitySpace.getUtility(lastReceivedOffer) > 0.5) {
+                return new Accept(this.getPartyId(), lastReceivedOffer);
+
+            } else if (lastReceivedOffer != null) {
+                // Offering a random bid with utility threshold
+                double my_threshold = 0.3;
+                myLastOffer = generateRandomBidWithUtility(my_threshold);
+                return new Offer(this.getPartyId(), myLastOffer);
+
+            } else {
+
+                return new Accept(this.getPartyId(), lastReceivedOffer);
+            }
         }
+
     }
 
     /**
